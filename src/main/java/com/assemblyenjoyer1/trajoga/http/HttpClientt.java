@@ -22,7 +22,7 @@ public class HttpClientt {
         this.client = java.net.http.HttpClient.newBuilder()
                 .sslContext(createInsecureSslContext())
                 .build();
-        this.baseUrl = Urls.BASE_URL;
+        this.baseUrl = Urls.BASE_TOOLS_URL;
     }
 
     public String sendAsync(HttpMethod method, String endpoint, String body) {
