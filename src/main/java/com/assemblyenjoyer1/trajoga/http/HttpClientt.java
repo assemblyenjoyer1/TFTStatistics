@@ -25,10 +25,10 @@ public class HttpClientt {
         this.baseUrl = Urls.BASE_TOOLS_URL;
     }
 
-    public String sendAsync(HttpMethod method, String endpoint, String body) {
+    public String sendAsync(String url, HttpMethod method, String endpoint, String body) {
         HttpRequest.BodyPublisher publisher = (body != null) ? HttpRequest.BodyPublishers.ofString(body) : HttpRequest.BodyPublishers.noBody();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(baseUrl + endpoint))
+                .uri(URI.create(url + endpoint))
                 .method(method.name(), publisher)
                 .header("Accept", "application/json")
                 .header("Content-Type", "application/json")
