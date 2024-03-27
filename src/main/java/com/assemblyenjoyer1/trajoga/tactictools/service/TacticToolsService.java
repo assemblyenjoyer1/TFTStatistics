@@ -62,10 +62,8 @@ public class TacticToolsService {
     }
 
     public static String getItemByDelta(Urls url, String unitName, String firstItem, String secondItem) {
-        if (unitName != null && unitName.length() > 0) {
-            char[] chars = unitName.toCharArray();
-            chars[0] = Character.toUpperCase(chars[0]);
-            unitName = new String(chars);
+        if (unitName != null && !unitName.isEmpty()) {
+            unitName = unitName.substring(0, 1).toUpperCase() + unitName.substring(1);
         }
 
         String buildId = extractBuildId();
@@ -94,14 +92,22 @@ public class TacticToolsService {
             boolean eligible = true;
             item.setName((String) rawData.get(i).get(0));
             item.setType((String) rawData.get(i).get(1));
-            if(item.getType().toLowerCase().contains("radiant") || item.getType().toLowerCase().contains("ornn") || item.getType().toLowerCase().contains("emblem") || item.getType().toLowerCase().contains("thiefs")){
+            if(
+                    item.getType().toLowerCase().contains("radiant") ||
+                    item.getType().toLowerCase().contains("ornn") ||
+                    item.getType().toLowerCase().contains("emblem") ||
+                    item.getType().toLowerCase().contains("thiefs") ||
+                    item.getType().toLowerCase().contains("inkshadow"))
+            {
                 eligible = false;
             }
 
             Type type = new TypeToken<Map<String, Double>>() {}.getType();
             Map<String, Double> dataMap = gson.fromJson(rawData.get(i).get(2).toString(), type);
 
-            if (dataMap.containsKey("delta") && eligible) {
+            if (dataMap.containsKey("delta") && eligible && dataMap.containsKey("count")) {
+                double games = dataMap.get("count");
+                if (games < 100.0) continue;
                 double delta = dataMap.get("delta");
                 if (delta < currentLowestDelta) {
                     currentLowestDelta = delta;
@@ -121,15 +127,14 @@ public class TacticToolsService {
 
         String firstItem = getItemByDelta(Urls.BASE_EXPLORER_URL_3_COST, unitName.toLowerCase(), "", "");
         items.add(firstItem);
-        if(firstItem.equals("Not enough Stats")) return items;
+        if(firstItem.equals("Not enough Stats")) return ProcessItems.transformItemNames(items);
 
         String secondItem = getItemByDelta(Urls.BASE_EXPLORER_URL_3_COST_2ND_ITEM, unitName.toLowerCase(), firstItem, "");
         items.add(secondItem);
-        if(secondItem.equals("Not enough Stats")) return items;
+        if(secondItem.equals("Not enough Stats")) return ProcessItems.transformItemNames(items);
 
         String thirdItem = getItemByDelta(Urls.BASE_EXPLORER_URL_3_COST_3RD_ITEM, unitName.toLowerCase(), firstItem, secondItem);
         items.add(thirdItem);
-        if(thirdItem.equals("Not enough Stats")) return items;
 
         return ProcessItems.transformItemNames(items);
     }

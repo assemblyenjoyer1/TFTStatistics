@@ -36,4 +36,23 @@ public class ProcessItems {
         return newItems;
     }
 
+    public static String transformItemName(String item) {
+        switch (item) {
+            case "RapidFireCannon":
+                return ("RedBuff");
+            case "Leviathan":
+                return ("Nashors");
+            case "MadredsBloodrazor":
+                return ("GiantSlayer");
+            case "UnstableConcoction":
+                return ("HandOfJustice");
+            case "NightHarvester":
+                return ("SteadfastHeart");
+            case "FrozenHeart":
+                return ("ProtectorsVow");
+            default:
+                return (item);
+        }
+    }
+
 }
